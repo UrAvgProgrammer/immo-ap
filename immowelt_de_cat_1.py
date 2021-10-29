@@ -21,14 +21,18 @@ posting_url = []
 
 def scroll_down(driver):
 	# scroll down to bottom page to load all data
-	driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+	y = 1000
+	for timer in range(0,50):
+		driver.execute_script("window.scrollTo(0, "+str(y)+")")
+		y += 1000
+		time.sleep(1)
 
 def scroll_to_paginate(driver):
 	driver.execute_script("window.scrollTo(0, (document.body.scrollHeight/2)+50);")
 
 def get_provider(driver):
-	driver.execute_script("arguments[0].scrollIntoView();", driver.find_element(By.CSS_SELECTOR, 'button.arrowButton-20ae5'))
-	time.sleep(20)
+	scroll_down(driver)
+
 	# get the posting
 	providers = driver.find_elements(
 		By.CSS_SELECTOR,
@@ -50,20 +54,19 @@ def get_provider(driver):
 
 def run(url):
 	driver.get(url)
-	time.sleep(5)
 
 	#check if there is next page
 	has_next = True
 
 	while has_next:
+		time.sleep(5)
 		# scroll down to bottom page to load all data
 		get_provider(driver)
 
 		wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, 'button.arrowButton-20ae5')))
 		next_button = driver.find_element(By.CSS_SELECTOR, 'button.arrowButton-20ae5')
-		last_page = driver.find_elements(By.CSS_SELECTOR, 'div.Pagination-190de button')[0].get_attribute('class')
-
-		if next_button and last_page != 'arrowButton-20ae5':
+		last_page = driver.find_elements(By.CSS_SELECTOR, 'div.Pagination-190de button')[-1].get_attribute('class')
+		if next_button and last_page == 'arrowButton-20ae5':
 			scroll_to_paginate(driver)
 			time.sleep(5)
 			wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, 'button.arrowButton-20ae5'))).click()
@@ -101,5 +104,5 @@ def main():
 if __name__ == '__main__':
 	# main()
 	run('https://www.immowelt.de/liste/hamburg/immobilien/kaufen?sort=relevanz')
-	driver.close()
-	driver.quit()
+	# driver.close()
+	# driver.quit()
