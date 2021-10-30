@@ -69,7 +69,8 @@ def run(url):
 		if next_button and last_page == 'arrowButton-20ae5':
 			scroll_to_paginate(driver)
 			time.sleep(5)
-			wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, 'button.arrowButton-20ae5'))).click()
+			driver.find_elements(By.CSS_SELECTOR, 'div.Pagination-190de button')[-1].click()
+			# wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, 'button.arrowButton-20ae5'))).click()
 			print('clicked next')
 		else:
 			has_next = False
